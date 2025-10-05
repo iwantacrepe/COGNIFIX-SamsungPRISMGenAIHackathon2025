@@ -19,6 +19,7 @@ import kotlinx.serialization.json.jsonPrimitive
 
 object ChatAgent {
 
+
     private val generativeModel = Firebase.ai()
         .generativeModel(
             modelName = "gemini-2.5-flash",
@@ -49,6 +50,7 @@ object ChatAgent {
             )
         )
     }
+
     suspend fun streamMessage(
         context: Context,
         inputItems: List<ChatItem>
@@ -115,6 +117,30 @@ object ChatAgent {
         emit("🤖 Detected ${agentType.name.lowercase().replaceFirstChar { it.uppercase() }} agent...")
 
         try {
+
+                // 🧠 1️⃣ Check if user intent requires Nano Banana (visual image fix)
+                if (IntentDetector.shouldUseNanoBanana(inputItems)) {
+                    emit("🎨 Using Nano Banana for visual image edit…")
+
+                    val (note, bitmap) = NanoBananaHandler.processVisualFix(context, inputItems)
+
+                    if (bitmap != null) {
+                        // Save annotated image to cache & emit its URI for UI to render
+                        val file = java.io.File(context.cacheDir, "nanobanana_${System.currentTimeMillis()}.png")
+                        java.io.FileOutputStream(file).use { out ->
+                            bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out)
+                        }
+                        val uri = androidx.core.content.FileProvider.getUriForFile(
+                            context, "${context.packageName}.provider", file
+                        )
+                        emit("🖼️NANO_IMAGE_URI:$uri")
+                    }
+
+                    emit(note ?: "Here's the annotated image showing what needs fixing.")
+                    emit("✅ Nano Banana finished editing.")
+                    return@flow // 🔚 Skip normal Gemini flow for this message
+                }
+
             chat.history.add(userMessage)
             var response = chat.sendMessage(builder.build())
             val calls = response.functionCalls

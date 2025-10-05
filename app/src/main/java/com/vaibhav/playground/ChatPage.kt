@@ -490,26 +490,52 @@ fun ChatPage(navController: NavHostController) {
 
                             // Collect stream chunks
                             ChatAgent.streamMessage(context, toSend).collect { chunk ->
-                                // If the chunk starts with emoji markers like 🤖 or ⚙️ or 🌦️ — treat as status
-                                if (chunk.startsWith("🤖") ||
-                                    chunk.startsWith("⚙️") ||
-                                    chunk.startsWith("📍") ||
-                                    chunk.startsWith("🌦️") ||
-                                    chunk.startsWith("💰") ||
-                                    chunk.startsWith("🌐") ||
-                                    chunk.startsWith("💱")||
-                                    chunk.startsWith("✅")) {
-                                    // Add as a separate message line (agent thinking status)
-                                    messages = messages + ChatMessage.GroupMessage(listOf(ChatItem.Text(chunk)), false)
-                                } else {
-                                    aiText += chunk
-                                    messages = messages.toMutableList().apply {
-                                        this[aiBubbleIndex] = ChatMessage.GroupMessage(
-                                            listOf(ChatItem.Markdown(aiText)), false
+                                when {
+                                    // 🖼️ Image output from Nano Banana
+                                    chunk.startsWith("🖼️NANO_IMAGE_URI:") -> {
+                                        val uri = chunk.removePrefix("🖼️NANO_IMAGE_URI:")
+                                        messages = messages + ChatMessage.GroupMessage(
+                                            listOf(ChatItem.Image(uri)), // show the generated annotated image
+                                            isUser = false
                                         )
+                                    }
+
+                                    // 🎨 or 🖼️ status markers (Nano Banana / visual edit updates)
+                                    chunk.startsWith("🎨") || chunk.startsWith("🖼️") -> {
+                                        messages = messages + ChatMessage.GroupMessage(
+                                            listOf(ChatItem.Text(chunk)),
+                                            isUser = false
+                                        )
+                                    }
+
+                                    // 🤖, ⚙️, 🌦️, 💰, 💱, etc. — status/thinking updates from other agents
+                                    chunk.startsWith("🤖") ||
+                                            chunk.startsWith("⚙️") ||
+                                            chunk.startsWith("📍") ||
+                                            chunk.startsWith("🌦️") ||
+                                            chunk.startsWith("💰") ||
+                                            chunk.startsWith("🌐") ||
+                                            chunk.startsWith("💱") ||
+                                            chunk.startsWith("✅") -> {
+                                        messages = messages + ChatMessage.GroupMessage(
+                                            listOf(ChatItem.Text(chunk)),
+                                            isUser = false
+                                        )
+                                    }
+
+                                    // 🧠 Normal Gemini streaming text chunks (markdown or plain)
+                                    else -> {
+                                        aiText += chunk
+                                        messages = messages.toMutableList().apply {
+                                            this[aiBubbleIndex] = ChatMessage.GroupMessage(
+                                                listOf(ChatItem.Markdown(aiText)),
+                                                isUser = false
+                                            )
+                                        }
                                     }
                                 }
                             }
+
                         }
                     }
                 },

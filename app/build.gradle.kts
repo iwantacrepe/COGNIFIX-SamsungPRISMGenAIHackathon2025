@@ -54,6 +54,8 @@ android {
 dependencies {
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
+    implementation("com.google.firebase:firebase-vertex-ai")
+
     // Add this for JSON parsing with Kotlinx Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0") // Or the latest version
 
