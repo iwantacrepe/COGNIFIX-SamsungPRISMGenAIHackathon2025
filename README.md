@@ -127,12 +127,12 @@ com.vaibhav.playground/
    ```bash
    git clone https://github.com/yourusername/Cognifix.git
    cd Cognifix
-````
+  ```
 
 2. **Add your API keys:**
    In `FunctionHandlers.kt`, replace placeholder variables:
 
-   ```kotlin
+   ```bash
    private const val OPENWEATHER_API_KEY = "YOUR_API_KEY"
    private const val FMP_API_KEY = "YOUR_API_KEY"
    private const val SERPER_API_KEY = "YOUR_API_KEY"
