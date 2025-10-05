@@ -152,7 +152,10 @@ fun ChatPage(navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text("Cognifix Chat", style = MaterialTheme.typography.headlineSmall, color = Color.Black)
-            TextButton(onClick = { messages = emptyList() }) {
+            TextButton(onClick = {
+                messages = emptyList()
+                ChatAgent.resetChat()   // 🧠 clear Gemini conversation context
+            }) {
                 Icon(Icons.Filled.Refresh, contentDescription = "New Chat", tint = Color.Black)
                 Spacer(Modifier.width(4.dp))
                 Text("New Chat", color = Color.Black)
@@ -488,8 +491,12 @@ fun ChatPage(navController: NavHostController) {
                             // Collect stream chunks
                             ChatAgent.streamMessage(context, toSend).collect { chunk ->
                                 // If the chunk starts with emoji markers like 🤖 or ⚙️ or 🌦️ — treat as status
-                                if (chunk.startsWith("🤖") || chunk.startsWith("⚙️") || chunk.startsWith("📍") ||
-                                    chunk.startsWith("🌦️") || chunk.startsWith("✅")) {
+                                if (chunk.startsWith("🤖") ||
+                                    chunk.startsWith("⚙️") ||
+                                    chunk.startsWith("📍") ||
+                                    chunk.startsWith("🌦️") ||
+                                    chunk.startsWith("💰") ||
+                                    chunk.startsWith("✅")) {
                                     // Add as a separate message line (agent thinking status)
                                     messages = messages + ChatMessage.GroupMessage(listOf(ChatItem.Text(chunk)), false)
                                 } else {

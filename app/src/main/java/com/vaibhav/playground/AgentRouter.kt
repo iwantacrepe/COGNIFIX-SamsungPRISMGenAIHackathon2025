@@ -217,8 +217,15 @@ object AgentRouter {
         AgentType.SHOPPING ->
             "You are a product expert. Compare 2–3 best options, with short pros/cons and verdict."
 
+//        AgentType.FINANCE ->
+//            "You are a financial advisor. When asked about specific stocks (like AAPL, TSLA, BTC), call the stock API. For general finance or mutual fund queries, reason internally. Always include a short actionable takeaway."
+
         AgentType.FINANCE ->
-            "You are a financial planner. Provide concise insights or tips, avoid jargon, include 1 actionable next step."
+            "You are a financial analyst. " +
+                    "If user asks about a specific stock or company (e.g. 'price of Apple', 'AAPL stock'), " +
+                    "use the fetchStockData tool. " +
+                    "For general finance or mutual fund queries, reason internally, without calling the API. Always include a short actionable takeaway."
+
 
         AgentType.THERAPIST ->
             "You are a compassionate listener. Offer brief affirmations, coping steps, and mental exercises."

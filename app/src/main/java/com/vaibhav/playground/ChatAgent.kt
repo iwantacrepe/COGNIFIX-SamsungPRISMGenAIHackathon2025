@@ -18,38 +18,50 @@ import kotlinx.serialization.json.jsonPrimitive
 
 object ChatAgent {
 
-    // 🔧 Initialize model with function-calling tools
     private val generativeModel = Firebase.ai()
         .generativeModel(
             modelName = "gemini-2.5-flash",
             tools = FunctionDeclarations.tools
         )
 
-    // Maintain a persistent chat session
-    private val chat = generativeModel.startChat()
+    // ✅ Chat with persistent memory
+    // replace this line
+// private val chat = generativeModel.startChat()
+
+    // with:
+    private var _chat = generativeModel.startChat(
+        history = mutableListOf(
+            content(role = "model") { text("Hi! I'm Cognifix — your multimodal AI assistant.") }
+        )
+    )
+    val chat get() = _chat
+
 
     /**
      * Stream multi-turn responses with function-calling support.
      */
+    fun resetChat() {
+        // clear the current chat history and start a fresh one
+        _chat = generativeModel.startChat(
+            history = mutableListOf(
+                content(role = "model") { text("Hi! I'm Cognifix — your multimodal AI assistant.") }
+            )
+        )
+    }
     suspend fun streamMessage(
         context: Context,
         inputItems: List<ChatItem>
     ): Flow<String> = flow {
 
         val builder = Content.Builder()
-        val STYLE_PROMPT =
-            "Respond clearly, concisely, and avoid long paragraphs. Use short bullet points where possible."
+        val STYLE_PROMPT = "Respond concisely but naturally. Keep answers short and relevant."
 
-        // 🧠 Agent detection
         val agentType = AgentRouter.classifyAgent(inputItems)
         val systemPrompt = AgentRouter.getSystemPrompt(agentType)
 
         // Inject role/system prompt first
-        if (systemPrompt != null) {
-            builder.part(TextPart("$systemPrompt\n\n$STYLE_PROMPT"))
-        } else {
-            builder.part(TextPart(STYLE_PROMPT))
-        }
+        if (systemPrompt != null) builder.part(TextPart("$systemPrompt\n\n$STYLE_PROMPT"))
+        else builder.part(TextPart(STYLE_PROMPT))
 
         // 🖼️ Add multimodal input (text, image, file, etc.)
         inputItems.forEach { item ->
@@ -95,9 +107,14 @@ object ChatAgent {
             }
         }
 
+        val userMessage = content(role = "user") {
+            text(inputItems.filterIsInstance<ChatItem.Text>().joinToString(" ") { it.text })
+        }
+
         emit("🤖 Detected ${agentType.name.lowercase().replaceFirstChar { it.uppercase() }} agent...")
 
         try {
+            chat.history.add(userMessage)
             var response = chat.sendMessage(builder.build())
             val calls = response.functionCalls
 
@@ -129,6 +146,20 @@ object ChatAgent {
                             )
                         }
 
+                        "fetchStockData" -> {
+                            val query = call.args["query"]?.jsonPrimitive?.content ?: run {
+                                emit("⚠️ Missing query argument — unable to fetch stock data.")
+                                continue
+                            }
+                            emit("💰 Fetching live price for $query via Financial Modeling Prep API...")
+                            val stock = FunctionHandlers.fetchStockData(query)
+                            response = chat.sendMessage(
+                                content("function") {
+                                    part(FunctionResponsePart("fetchStockData", stock))
+                                }
+                            )
+                        }
+
                         // Future: add finance, news, etc.
                     }
                 }
@@ -145,6 +176,8 @@ object ChatAgent {
                     }
                 )
             }
+
+            chat.history.add(content(role = "model") { text(response.text ?: "No response from model.") })
 
             emit("✅ ${agentType.name.lowercase().replaceFirstChar { it.uppercase() }} agent finished reasoning.")
             emit(response.text ?: "No response from model.")

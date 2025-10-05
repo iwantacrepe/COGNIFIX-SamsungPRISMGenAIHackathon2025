@@ -5,10 +5,11 @@ import com.google.firebase.ai.type.Schema
 import com.google.firebase.ai.type.Tool
 
 /**
- * Defines function declarations so Gemini knows what tools it can use.
+ * Defines all function declarations (tools) Gemini can call.
  */
 object FunctionDeclarations {
 
+    // 🌍 Weather-related tools
     val getCoordinatesTool = FunctionDeclaration(
         name = "getCoordinates",
         description = "Get latitude and longitude for a given city using OpenWeather Geocoding API.",
@@ -21,14 +22,28 @@ object FunctionDeclarations {
         name = "fetchWeather",
         description = "Fetch current weather for given coordinates using OpenWeather API.",
         parameters = mapOf(
-            // Use Schema.double() for latitude and longitude
             "lat" to Schema.double("Latitude of the location."),
             "lon" to Schema.double("Longitude of the location.")
         )
     )
 
-    // Register both functions as tools
+    // 💹 Finance-related tool
+    val fetchStockDataTool = FunctionDeclaration(
+        name = "fetchStockData",
+        description = "Fetch live stock price & basic metrics using Financial Modeling Prep. Pass ticker (AAPL) or company name (Netflix).",
+        parameters = mapOf(
+            "query" to Schema.string("Ticker symbol or company name")
+        )
+    )
+
+    // 🧩 Add all to Gemini tool list
     val tools = listOf(
-        Tool.functionDeclarations(listOf(getCoordinatesTool, fetchWeatherTool))
+        Tool.functionDeclarations(
+            listOf(
+                getCoordinatesTool,
+                fetchWeatherTool,
+                fetchStockDataTool
+            )
+        )
     )
 }

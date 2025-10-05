@@ -19,7 +19,6 @@ enum class AgentType {
     DESIGNER,
     CAREER,
     NEWS,
-
     WEATHER,
     TECHSUPPORT
 
