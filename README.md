@@ -1,90 +1,176 @@
-# 🧠 Cognifix – Multimodal Multi-Agent Orchestrator
+# Cognifix: Multimodal Multi-Agent Orchestrator
 
-Cognifix is a **multimodal, multi-agent orchestrator** built in **Kotlin (Jetpack Compose)** that seamlessly handles **text, voice, image, audio, video, and file inputs** — routing them intelligently across specialized agents such as **Finance, Travel, Research, Design, Repair, and more**.  
-It uniquely combines **agentic reasoning** with **function-calling orchestration**, integrating APIs like **Financial Modeling Prep**, **Serper Search**, and **OpenWeather**, while using **Gemini models** for reasoning and tool invocation.
+## Introduction
 
----
+**Cognifix** is a multimodal, multi-agent orchestrator built in **Kotlin** that integrates **visual**, **textual**, and **auditory** modalities within a unified conversational framework.  
+It leverages **Gemini models** for text and multimodal reasoning, orchestrating multiple specialized agents (Finance, Travel, Repair, Research, etc.) to respond intelligently across domains.  
+Cognifix is unique in its **modular orchestration pipeline** — the system dynamically detects intent, selects relevant agents, invokes domain-specific APIs, and composes unified multimodal outputs, all in real-time.
 
-## 🎨 UI Walkthrough
-> Explore the Cognifix Chat interface designed for multimodal interactions.
-
-![UI Walkthrough](UI_SCREENSHOT_PLACEHOLDER.png)
+Unlike conventional chat applications, Cognifix merges perception and reasoning: images, text, and voice inputs flow into an orchestrator that coordinates specialized agents, enabling contextual, knowledge-rich, and multimodal reasoning.
 
 ---
 
-## 🤝 Agent Interaction
-> Multi-agent communication and orchestration flow inside Cognifix.
+## UI Walkthrough
 
-![Agent Interaction](AGENT_INTERACTION.png)
+The Cognifix user interface provides a minimal yet powerful multimodal chat experience, integrating:
+- Real-time text and voice input.
+- Image, video, and file attachments.
+- Visual annotations through NanoBanana (ImageAnnotator).
+- Adaptive agent routing based on input context.
 
----
+Below is an example of the **UI walkthrough** illustrating how a user interacts with the chat system:
 
-## ⚙️ Technical Architecture
-
-### 🔹 Core Concept
-Cognifix acts as a **meta-orchestrator** — routing each user request to the most relevant **Agent** or combination of agents using natural-language intent detection.  
-Agents like *FinanceAgent*, *TravelAgent*, *RepairAgent*, and *NanoBanana (Image Annotator)* specialize in their own API domains or reasoning roles.
-
-### 🔹 Multi-Agent Flow
-
-1. **User Input (Multimodal)**  
-   Text, image, audio, or video input enters the system through `ChatPage.kt`.
-2. **Intent Detection**  
-   `IntentDetector.kt` decides whether to invoke **Gemini (LLM)** or **NanoBanana (ImageAnnotator)** for visual reasoning.
-3. **Routing Logic**  
-   `AgentRouter.kt` classifies which domain agent (Finance, Research, Travel, etc.) should handle the query.
-4. **System Prompt & Tools**  
-   Each agent has its own **system prompt** and linked **function declarations** (`FunctionDeclaration.kt`).
-5. **LLM Orchestration**  
-   `ChatAgent.kt` acts as the orchestrator, sending structured multimodal inputs to **Gemini API** and handling **tool calls** dynamically via `FunctionHandlers.kt`.
-6. **API & Tool Handling**  
-   APIs like:
-   - 🪙 `fetchStockData()` – Financial Modeling Prep  
-   - 🌦️ `fetchWeather()` – OpenWeather API  
-   - 🌍 `fetchWebSearchResults()` – Serper.dev (Google Search)  
-   - 💱 `fetchExchangeRate()` – Forex from FMP  
-   - ✈️ `fetchFlights()` – Search-based route finder  
-   are defined and executed through `FunctionHandlers.kt`.
-7. **Response Aggregation**  
-   All agents’ outputs are aggregated and formatted by `ChatAgent.kt` before displaying in `ChatPage.kt`.
+![UI Walkthrough](ui_walkthrough.png)
 
 ---
 
-## 🧩 File Breakdown
+## Agent Interaction
 
-| File | Role |
-|------|------|
-| **MainActivity.kt** | App entry point |
-| **ChatPage.kt** | UI logic for chat screen, multimodal input, attachments, and streaming output |
-| **ChatAgent.kt** | Orchestrator that manages agent reasoning, LLM calls, and tool executions |
-| **AgentRouter.kt** | Classifies input into correct domain-specific agent |
-| **FunctionHandlers.kt** | Executes external API or function calls from Gemini |
-| **FunctionDeclaration.kt** | Defines schema for all registered tools |
-| **ImageAnnotator.kt** | Handles NanoBanana image reasoning and annotation |
-| **IntentDetector.kt** | Detects visual intent (image editing, object fixes) vs textual reasoning |
-| **ChatModels.kt** | Data models for chat messages and chat items (Text, Image, Audio, etc.) |
+The orchestrator dynamically routes each query to one or multiple specialized agents.  
+Agents collaborate by invoking the correct API, reasoning module, or multimodal handler. The orchestrator aggregates their responses into a cohesive conversational output.
 
----
+Example interaction between multiple agents:
+- **Travel Agent** retrieves live data using `fetchFlights` and `fetchWebSearchResults`.
+- **Finance Agent** provides currency exchange rates and stock data through `fetchStockData` and `fetchExchangeRate`.
+- **Research Agent** summarizes related information via Serper.dev web search.
+- **NanoBanana (ImageAnnotator)** visually analyzes or enhances user-uploaded images.
 
-## 🧠 Why Cognifix is Unique
-
-- **Multimodal Understanding:** Text + Image + Audio inputs handled simultaneously.  
-- **Dynamic Agent Switching:** Multiple agents can collaborate under one orchestration cycle.  
-- **Context Preservation:** Memory reset control with *New Chat* button for stateless or contextual flow.  
-- **Seamless API Orchestration:** Combines reasoning and external data-fetching intelligently.  
-- **Visual Intelligence (NanoBanana):** Enables on-image annotation and correction reasoning.  
- 
+![Agent Interaction](agent_interaction.png)
 
 ---
 
-## 🧑‍💻 Built With
+## Technical Architecture
 
-- **Language:** Kotlin  
-- **Framework:** Jetpack Compose  
-- **Backend Model:** Gemini API  
-- **Architecture:** Multimodal Orchestrated Agent System  
-- **APIs Integrated:** OpenWeather, Financial Modeling Prep, Serper.dev Search, NanoBanana Image Annotator  
+### Core System Overview
+
+Cognifix follows an **agentic pipeline architecture** with the following flow:
+
+1. **Multimodal Input Layer**  
+   Handles text, audio, image, and video inputs. Extracted data from these modalities is passed downstream to the orchestrator.
+   
+2. **Intent Detection Layer**  
+   Implemented via `IntentDetector.kt`, it determines whether the request should invoke **NanoBanana (ImageAnnotator)** or a standard reasoning agent.  
+   Example: Queries containing visual repair terms with attached images are routed to the NanoBanana model.
+
+3. **Agent Routing & Orchestration**  
+   Defined in `AgentRouter.kt`, it classifies input into domain-specific agents based on contextual keywords.  
+   Each agent has a **system prompt** defining reasoning scope and which API functions it can invoke.
+
+4. **Function Declaration & Tool Invocation**  
+   Managed by `FunctionDeclaration.kt` and `FunctionHandlers.kt`.  
+   These define APIs such as:
+   - `fetchWeather`, `getCoordinates` (OpenWeather)
+   - `fetchStockData`, `fetchExchangeRate` (Financial Modeling Prep)
+   - `fetchWebSearchResults` (Serper.dev)
+   - `fetchFlights`, `fetchNearbyPlaces` (Google Search integrations)
+
+   These functions are registered in the **Gemini tool list**, enabling structured function-calling behavior within the orchestrator.
+
+5. **Chat Agent Processing**  
+   `ChatAgent.kt` handles request orchestration, streaming Gemini responses, invoking tools, and aggregating results.  
+   It also supports real-time output streaming to the UI through coroutine-based collectors.
+
+6. **Multimodal Rendering & Interaction**  
+   The frontend logic, written in Jetpack Compose (`ChatPage.kt`), handles:
+   - Rendering of messages and media.
+   - Streaming text updates.
+   - Playback of audio and video content.
+   - Real-time annotation previews.
+
+7. **NanoBanana (ImageAnnotator)**  
+   Managed via `ImageAnnotator.kt`, this module uses the Gemini 2.5 Flash Image model to analyze or visually modify images.  
+   It supports visual feedback overlays (e.g., circles, arrows, and text annotations).
+
+8. **Application Entrypoint**  
+   `MainActivity.kt` initializes the application context, navigation, and sets up Firebase AI services.
 
 ---
 
-> ✨ *“Cognifix brings harmony to chaos — bridging vision, reasoning, and interaction through a symphony of intelligent agents.”*
+## File Structure Overview
+
+```
+
+com.vaibhav.playground/
+│
+├── AgentRouter.kt             # Agent classification and system prompts
+├── AgentType.kt               # Enum for agent categories
+├── ChatAgent.kt               # Core orchestrator for LLM reasoning and function calls
+├── ChatModels.kt              # Data models for chat messages and multimodal items
+├── ChatPage.kt                # Jetpack Compose UI logic
+├── FunctionDeclaration.kt     # Definitions of external API function schemas
+├── FunctionHandlers.kt        # Actual API call implementations
+├── ImageAnnotator.kt          # NanoBanana module for visual reasoning/editing
+├── IntentDetector.kt          # Determines when to invoke NanoBanana vs normal LLM
+├── MainActivity.kt            # Android entrypoint and navigation host
+└── ui.theme/                  # Theming and color definitions
+
+````
+
+---
+
+## Setup Guide
+
+### Prerequisites
+- **Android Studio Flamingo+**
+- **Kotlin 1.9+**
+- **Gradle 8.0+**
+- **Firebase AI SDK**
+- API keys for:
+  - [OpenWeather API](https://openweathermap.org/)
+  - [Financial Modeling Prep](https://financialmodelingprep.com/)
+  - [Serper.dev](https://serper.dev/)
+  - [Google Places API] for advanced location search
+
+### Configuration Steps
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/Cognifix.git
+   cd Cognifix
+````
+
+2. **Add your API keys:**
+   In `FunctionHandlers.kt`, replace placeholder variables:
+
+   ```kotlin
+   private const val OPENWEATHER_API_KEY = "YOUR_API_KEY"
+   private const val FMP_API_KEY = "YOUR_API_KEY"
+   private const val SERPER_API_KEY = "YOUR_API_KEY"
+   ```
+
+3. **Enable Firebase AI:**
+   Ensure you have connected your Firebase project and enabled Generative AI services.
+
+4. **Run the app:**
+
+   ```bash
+   ./gradlew installDebug
+   ```
+
+5. **Test multimodal interactions:**
+
+   * Text-only queries (e.g., “Explain quantum entanglement”)
+   * Image + text prompts (e.g., “Fix this diagram”)
+   * Domain-specific queries (e.g., “Stock price of Apple”, “Flights from Delhi to Tokyo”)
+
+---
+
+## Submissions
+
+Include any submission or demonstration materials here.
+
+| Type             | Description                                        | Link               |
+| ---------------- | -------------------------------------------------- | ------------------ |
+|  Video Demo    | Walkthrough of Cognifix’s multimodal orchestration | [YouTube Demo](#)  |
+|  Presentation  | Technical architecture and design overview         | [Google Slides](#) |
+|  Documentation | Full API and agent reference                       | [Project Wiki](#)  |
+
+---
+
+## Summary
+
+Cognifix represents a cohesive integration of multimodal understanding, agentic reasoning, and function calling in a single Kotlin-based ecosystem.
+By enabling cooperative multi-agent behavior with real-time multimodal reasoning, it demonstrates how large language models can power interactive, intelligent, and perceptually grounded Android applications.
+
+---
+
