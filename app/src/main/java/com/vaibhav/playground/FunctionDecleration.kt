@@ -35,6 +35,49 @@ object FunctionDeclarations {
             "query" to Schema.string("Ticker symbol or company name")
         )
     )
+    val fetchNearbyPlacesTool = FunctionDeclaration(
+        name = "fetchNearbyPlaces",
+        description = "Find nearby points of interest like restaurants, hotels, or tourist spots using Google Places API.",
+        parameters = mapOf(
+            "lat" to Schema.double("Latitude of the location."),
+            "lon" to Schema.double("Longitude of the location."),
+            "type" to Schema.string("Type of place to search (e.g., restaurant, hotel, museum).")
+        )
+    )
+
+    val fetchFlightsTool = FunctionDeclaration(
+        name = "fetchFlights",
+        description = "Find flight options between two cities using Google Search results.",
+        parameters = mapOf(
+            "source" to Schema.string("Departure city or airport."),
+            "destination" to Schema.string("Arrival city or airport."),
+            "date" to Schema.string("Date of travel in YYYY-MM-DD format (optional).")
+        )
+    )
+
+
+    val fetchExchangeRateTool = FunctionDeclaration(
+        name = "fetchExchangeRate",
+        description = "Fetch real-time currency exchange rate between two currencies using Financial Modeling Prep API.",
+        parameters = mapOf(
+            "base" to Schema.string("Base currency code (e.g., USD)."),
+            "target" to Schema.string("Target currency code (e.g., INR).")
+        )
+    )
+
+
+    val fetchWebSearchResultsTool = FunctionDeclaration(
+        name = "fetchWebSearchResults",
+        description = "Search the web for up-to-date information about any topic, location, or entity using Google Search (Serper.dev API).",
+        parameters = mapOf(
+            "query" to Schema.string("Search query text.")
+        )
+    )
+
+
+
+
+
 
     // 🧩 Add all to Gemini tool list
     val tools = listOf(
@@ -42,7 +85,11 @@ object FunctionDeclarations {
             listOf(
                 getCoordinatesTool,
                 fetchWeatherTool,
-                fetchStockDataTool
+                fetchStockDataTool,
+                fetchNearbyPlacesTool,
+                fetchFlightsTool,
+                fetchWebSearchResultsTool,
+                fetchExchangeRateTool
             )
         )
     )

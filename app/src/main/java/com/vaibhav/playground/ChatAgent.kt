@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.double
 import kotlinx.serialization.json.jsonPrimitive
 
@@ -159,6 +160,44 @@ object ChatAgent {
                                 }
                             )
                         }
+                        "fetchExchangeRate" -> {
+                            val base = call.args["base"]?.jsonPrimitive?.content?.uppercase() ?: "USD"
+                            val target = call.args["target"]?.jsonPrimitive?.content?.uppercase() ?: "INR"
+                            emit("💱 Fetching live forex rate for $base → $target ...")
+                            val forex = FunctionHandlers.fetchExchangeRate(base, target)
+                            response = chat.sendMessage(
+                                content("function") {
+                                    part(FunctionResponsePart("fetchExchangeRate", forex))
+                                }
+                            )
+                        }
+
+                        "fetchFlights" -> {
+                            val source = call.args["source"]?.jsonPrimitive?.content ?: ""
+                            val destination = call.args["destination"]?.jsonPrimitive?.content ?: ""
+                            val date = call.args["date"]?.jsonPrimitive?.contentOrNull
+                            emit("🛫 Searching flights from $source to $destination...")
+                            val flights = FunctionHandlers.fetchFlights(source, destination, date)
+                            response = chat.sendMessage(
+                                content("function") {
+                                    part(FunctionResponsePart("fetchFlights", flights))
+                                }
+                            )
+                        }
+
+
+
+                        "fetchWebSearchResults" -> {
+                            val query = call.args["query"]!!.jsonPrimitive.content
+                            emit("🌐 Searching web for: $query …")
+                            val result = FunctionHandlers.fetchWebSearchResults(query)
+                            response = chat.sendMessage(
+                                content("function") {
+                                    part(FunctionResponsePart("fetchWebSearchResults", result))
+                                }
+                            )
+                        }
+
 
                         // Future: add finance, news, etc.
                     }

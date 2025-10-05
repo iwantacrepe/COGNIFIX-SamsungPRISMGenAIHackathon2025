@@ -496,6 +496,8 @@ fun ChatPage(navController: NavHostController) {
                                     chunk.startsWith("📍") ||
                                     chunk.startsWith("🌦️") ||
                                     chunk.startsWith("💰") ||
+                                    chunk.startsWith("🌐") ||
+                                    chunk.startsWith("💱")||
                                     chunk.startsWith("✅")) {
                                     // Add as a separate message line (agent thinking status)
                                     messages = messages + ChatMessage.GroupMessage(listOf(ChatItem.Text(chunk)), false)

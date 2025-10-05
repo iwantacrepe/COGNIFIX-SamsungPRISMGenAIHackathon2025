@@ -3,6 +3,7 @@ package com.vaibhav.playground
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -12,8 +13,10 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.net.URL
 import java.net.URLEncoder
 
@@ -143,6 +146,159 @@ object FunctionHandlers {
         )
     }
 
+    private const val GOOGLE_PLACES_API_KEY = "YOUR_GOOGLE_PLACES_API_KEY"
+    private const val AVIATIONSTACK_API_KEY = "YOUR_AVIATIONSTACK_API_KEY"
+
+
+    suspend fun fetchNearbyPlaces(lat: Double, lon: Double, type: String): JsonObject {
+        val url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+                "?location=$lat,$lon&type=${type.lowercase()}&radius=2000&key=$GOOGLE_PLACES_API_KEY"
+        val body = httpGetOrNull(url) ?: return errorJson("No response from Google Places API")
+
+        val results = runCatching { Json.parseToJsonElement(body).jsonObject["results"]?.jsonArray }
+            .getOrNull() ?: return errorJson("No nearby $type found")
+
+        val top = results.take(3).mapNotNull { place ->
+            val obj = place.jsonObject
+            val name = obj["name"]?.jsonPrimitive?.content
+            val rating = obj["rating"]?.jsonPrimitive?.doubleOrNull
+            val address = obj["vicinity"]?.jsonPrimitive?.content
+            if (name != null) JsonObject(mapOf(
+                "name" to JsonPrimitive(name),
+                "rating" to (rating?.let { JsonPrimitive(it) } ?: JsonNull),
+                "address" to JsonPrimitive(address ?: "")
+            )) else null
+        }
+
+        return JsonObject(mapOf("places" to JsonArray(top)))
+    }
+
+    suspend fun fetchFlights(source: String, destination: String, date: String? = null): JsonObject {
+        val q = buildString {
+            append("Flights from $source to $destination")
+            if (!date.isNullOrBlank()) append(" on $date")
+        }
+
+        val client = OkHttpClient()
+        val mediaType = "application/json".toMediaType()
+        val body = """{"q":"$q"}""".toRequestBody(mediaType)
+
+        val request = Request.Builder()
+            .url("https://google.serper.dev/search")
+            .post(body)
+            .addHeader("X-API-KEY", SERPER_API_KEY)
+            .addHeader("Content-Type", "application/json")
+            .build()
+
+        val response = client.newCall(request).execute()
+        val json = response.body?.string() ?: return errorJson("No response from search API")
+
+        val root = runCatching { Json.parseToJsonElement(json).jsonObject }.getOrNull()
+            ?: return errorJson("Invalid JSON from Serper")
+
+        val results = root["organic"]?.jsonArray ?: return errorJson("No search results found")
+
+        val flights = results.take(5).mapNotNull { item ->
+            val obj = item.jsonObject
+            val title = obj["title"]?.jsonPrimitive?.contentOrNull
+            val link = obj["link"]?.jsonPrimitive?.contentOrNull
+            val snippet = obj["snippet"]?.jsonPrimitive?.contentOrNull
+            if (title != null && snippet != null) {
+                JsonObject(
+                    mapOf(
+                        "title" to JsonPrimitive(title),
+                        "snippet" to JsonPrimitive(snippet),
+                        "link" to JsonPrimitive(link ?: "")
+                    )
+                )
+            } else null
+        }
+
+        return JsonObject(mapOf(
+            "source" to JsonPrimitive(source),
+            "destination" to JsonPrimitive(destination),
+            "date" to JsonPrimitive(date ?: "unspecified"),
+            "flights" to JsonArray(flights)
+        ))
+    }
+
+
+    suspend fun fetchExchangeRate(base: String, target: String): JsonObject {
+        val pair = (base + target).uppercase()
+        val url = "https://financialmodelingprep.com/stable/quote-short?symbol=$pair&apikey=$FMP_API_KEY"
+
+        val body = httpGetOrNull(url) ?: return errorJson("No response from FMP Forex API")
+
+        val arr = runCatching { Json.parseToJsonElement(body).jsonArray }.getOrNull()
+        val first = arr?.firstOrNull()?.jsonObject ?: return errorJson("No data found for $pair")
+
+        val rate = first["price"]?.jsonPrimitive?.doubleOrNull ?: return errorJson("Invalid response")
+        val change = first["change"]?.jsonPrimitive?.doubleOrNull ?: 0.0
+        val volume = first["volume"]?.jsonPrimitive?.longOrNull ?: 0L
+
+        return JsonObject(
+            mapOf(
+                "symbol" to JsonPrimitive(pair),
+                "rate" to JsonPrimitive(rate),
+                "change" to JsonPrimitive(change),
+                "volume" to JsonPrimitive(volume)
+            )
+        )
+    }
+
+
+
+
+    private const val SERPER_API_KEY = "bd86ce7c38b447ce99e72aaa46a4940933360517"
+
+    suspend fun fetchWebSearchResults(query: String): JsonObject {
+        val encodedQuery = query.trim()
+        if (encodedQuery.isEmpty()) return errorJson("Empty search query")
+
+        try {
+            // Build JSON body
+            val jsonBody = """{"q":"$encodedQuery"}"""
+            val requestBody = jsonBody.toRequestBody("application/json".toMediaType())
+
+            // Build POST request
+            val request = Request.Builder()
+                .url("https://google.serper.dev/search")
+                .post(requestBody)
+                .addHeader("X-API-KEY", SERPER_API_KEY)
+                .addHeader("Content-Type", "application/json")
+                .build()
+
+            // Execute call
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful)
+                    return errorJson("HTTP ${response.code} from Serper API")
+
+                val responseBody = response.body?.string() ?: return errorJson("Empty response body")
+                val json = Json.parseToJsonElement(responseBody).jsonObject
+
+                // Extract first few organic results
+                val results = json["organic"]?.jsonArray?.take(3)?.mapNotNull { item ->
+                    val obj = item.jsonObject
+                    val title = obj["title"]?.jsonPrimitive?.contentOrNull
+                    val snippet = obj["snippet"]?.jsonPrimitive?.contentOrNull
+                    val link = obj["link"]?.jsonPrimitive?.contentOrNull
+                    if (title != null && snippet != null && link != null) {
+                        JsonObject(
+                            mapOf(
+                                "title" to JsonPrimitive(title),
+                                "snippet" to JsonPrimitive(snippet),
+                                "link" to JsonPrimitive(link)
+                            )
+                        )
+                    } else null
+                } ?: emptyList()
+
+                return JsonObject(mapOf("results" to JsonArray(results)))
+            }
+        } catch (e: Exception) {
+            return errorJson("Search error: ${e.localizedMessage}")
+        }
+    }
 
     // --- Helpers
     private fun httpGetOrNull(url: String): String? = try {

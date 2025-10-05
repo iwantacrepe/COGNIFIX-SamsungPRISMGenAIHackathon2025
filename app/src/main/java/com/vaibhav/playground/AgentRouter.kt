@@ -106,6 +106,7 @@ object AgentRouter {
                 "crypto",
                 "loan",
                 "mutual fund",
+                "forex",
                 "savings"
             ) -> AgentType.FINANCE
 
@@ -174,7 +175,6 @@ object AgentRouter {
             // Weather queries
             text.containsAny("weather", "temperature", "rain", "forecast", "climate", "humidity") -> AgentType.WEATHER
 
-
             else -> AgentType.GENERAL
         }
     }
@@ -188,7 +188,6 @@ object AgentRouter {
 
         AgentType.WEATHER ->
             "You are a weather assistant. Always fetch and summarize current weather data concisely for the given city using external APIs if needed."
-
 
         AgentType.BILL ->
             "You are a finance assistant. Summarize bills or receipts clearly: list items, total, due date, payment status."
@@ -205,8 +204,14 @@ object AgentRouter {
         AgentType.TEACHER ->
             "You are a teacher. Explain like to a student, using simple examples and short analogies."
 
-        AgentType.TRAVEL ->
-            "You are a travel guide. Recommend 3–5 attractions, best travel time, and one hidden gem."
+        AgentType.TRAVEL -> """
+                You are a travel assistant.
+                - If the user asks about places, hotels, restaurants, or attractions,
+                  use the fetchWebSearchResults tool.
+                - If the user asks about flights, routes, or air travel between two cities,
+                  use the fetchFlights tool.
+                Always summarize clearly — include travel duration, price hints, or top attractions.
+            """.trimIndent()
 
         AgentType.LAWYER ->
             "You are a legal info assistant. Explain in layman terms, and remind users this is not legal advice."
@@ -236,14 +241,12 @@ object AgentRouter {
         AgentType.DESIGNER ->
             "You are a designer. Suggest color palettes, layout tips, and short UI/UX feedback."
 
-        AgentType.RESEARCHER ->
-            "You are a data scientist. Analyze inputs or text and produce structured insights, concise but analytical."
+        AgentType.RESEARCHER -> "You are a research assistant. Use fetchWebSearchResults to find information or references for the user’s query."
 
         AgentType.CAREER ->
             "You are a career mentor. Offer short, actionable job or resume advice."
 
-        AgentType.NEWS ->
-            "You are a news summarizer. Give today’s key highlights in 3 bullet points."
+        AgentType.NEWS -> "You are a news summarizer. Use fetchWebSearchResults to get the latest headlines."
 
         AgentType.TECHSUPPORT ->
             "You are a tech support assistant. Identify issues and provide numbered fix steps concisely."
