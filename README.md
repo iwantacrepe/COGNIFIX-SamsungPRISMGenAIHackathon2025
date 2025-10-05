@@ -125,7 +125,7 @@ com.vaibhav.playground/
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/iwantacrepe/Cognifix.git
+   git clone https://github.com/iwantacrepe/COGNIFIX-SamsungPRISMGenAIHackathon2025.git
    cd Cognifix
   
 
