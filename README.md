@@ -10,35 +10,6 @@ Unlike conventional chat applications, Cognifix merges perception and reasoning:
 
 ---
 
-## UI Walkthrough
-
-The Cognifix user interface provides a minimal yet powerful multimodal chat experience, integrating:
-- Real-time text and voice input.
-- Image, video, and file attachments.
-- Visual annotations through NanoBanana (ImageAnnotator).
-- Adaptive agent routing based on input context.
-
-Below is an example of the **UI walkthrough** illustrating how a user interacts with the chat system:
-
-![UI Walkthrough](UI_WALKTHROUGH.jpg)
-
----
-
-## Agent Interaction
-
-The orchestrator dynamically routes each query to one or multiple specialized agents.  
-Agents collaborate by invoking the correct API, reasoning module, or multimodal handler. The orchestrator aggregates their responses into a cohesive conversational output.
-
-Example interaction between multiple agents:
-- **Travel Agent** retrieves live data using `fetchFlights` and `fetchWebSearchResults`.
-- **Finance Agent** provides currency exchange rates and stock data through `fetchStockData` and `fetchExchangeRate`.
-- **Research Agent** summarizes related information via Serper.dev web search.
-- **NanoBanana (ImageAnnotator)** visually analyzes or enhances user-uploaded images.
-
-![Agent Interaction](AGENT_INTERACTION.png)
-
----
-
 ## Technical Architecture
 
 ### Core System Overview
@@ -105,6 +76,35 @@ com.vaibhav.playground/
 └── ui.theme/                  # Theming and color definitions
 
 ````
+
+---
+
+## UI Walkthrough
+
+The Cognifix user interface provides a minimal yet powerful multimodal chat experience, integrating:
+- Real-time text and voice input.
+- Image, video, and file attachments.
+- Visual annotations through NanoBanana (ImageAnnotator).
+- Adaptive agent routing based on input context.
+
+Below is an example of the **UI walkthrough** illustrating how a user interacts with the chat system:
+
+![UI Walkthrough](UI_WALKTHROUGH.jpg)
+
+---
+
+## Agent Interaction
+
+The orchestrator dynamically routes each query to one or multiple specialized agents.  
+Agents collaborate by invoking the correct API, reasoning module, or multimodal handler. The orchestrator aggregates their responses into a cohesive conversational output.
+
+Example interaction between multiple agents:
+- **Travel Agent** retrieves live data using `fetchFlights` and `fetchWebSearchResults`.
+- **Finance Agent** provides currency exchange rates and stock data through `fetchStockData` and `fetchExchangeRate`.
+- **Research Agent** summarizes related information via Serper.dev web search.
+- **NanoBanana (ImageAnnotator)** visually analyzes or enhances user-uploaded images.
+
+![Agent Interaction](AGENT_INTERACTION.png)
 
 ---
 
