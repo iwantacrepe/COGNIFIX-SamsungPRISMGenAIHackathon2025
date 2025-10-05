@@ -115,7 +115,7 @@ fun ChatPage(navController: NavHostController) {
                     pendingAttachments = pendingAttachments + ChatItem.Audio(it.toString())
                 }
                 type.startsWith("video/") -> {
-                    pendingAttachments = pendingAttachments + ChatItem.Video(it.toString()) // ✅ NEW
+                    pendingAttachments = pendingAttachments + ChatItem.Video(it.toString())
                 }
                 else -> {
                     val name = uri.lastPathSegment ?: "Document"
@@ -154,7 +154,7 @@ fun ChatPage(navController: NavHostController) {
             Text("Cognifix Chat", style = MaterialTheme.typography.headlineSmall, color = Color.Black)
             TextButton(onClick = {
                 messages = emptyList()
-                ChatAgent.resetChat()   // 🧠 clear Gemini conversation context
+                ChatAgent.resetChat()   //  clear Gemini conversation context
             }) {
                 Icon(Icons.Filled.Refresh, contentDescription = "New Chat", tint = Color.Black)
                 Spacer(Modifier.width(4.dp))
@@ -194,7 +194,7 @@ fun ChatPage(navController: NavHostController) {
                                 // --- Attachments (Image/File/Audio/Video) ---
                                 msg.items.filter { it !is ChatItem.Text }.forEach { item ->
                                     when (item) {
-                                        // ✅ Image preview
+                                        //  Image preview
                                         is ChatItem.Image -> AsyncImage(
                                             model = item.uri,
                                             contentDescription = "Sent image",
@@ -203,7 +203,7 @@ fun ChatPage(navController: NavHostController) {
                                                 .clip(RoundedCornerShape(12.dp))
                                         )
 
-                                        // ✅ Video preview + playback
+                                        //  Video preview + playback
                                         is ChatItem.Video -> {
                                             AndroidView(
                                                 modifier = Modifier
@@ -222,7 +222,7 @@ fun ChatPage(navController: NavHostController) {
                                             )
                                         }
 
-                                        // ✅ Audio playback
+                                        //  Audio playback
                                         is ChatItem.Audio -> {
                                             var isPlaying by remember { mutableStateOf(false) }
                                             val mediaPlayer = remember {
@@ -253,7 +253,7 @@ fun ChatPage(navController: NavHostController) {
                                             }
                                         }
 
-                                        // ✅ File preview (PDF/doc)
+                                        //  File preview (PDF/doc)
                                         is ChatItem.File -> {
                                             val uri = Uri.parse(item.uri)
                                             Row(

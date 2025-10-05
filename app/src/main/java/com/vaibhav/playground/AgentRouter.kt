@@ -7,173 +7,138 @@ object AgentRouter {
             .joinToString(" ") { it.text }
             .lowercase()
         return when {
-            // Food & cooking
+
+            //  Food & cooking — only when talking about meals or ingredients
             text.containsAny(
-                "recipe",
-                "cook",
-                "dish",
-                "meal",
-                "ingredients",
-                "fridge"
+                "recipe", "cook", "cooking", "dish", "meal",
+                "ingredients", "food idea", "cuisine", "bake"
             ) -> AgentType.RECIPE
 
-            // Finance / bills
-            text.containsAny("bill", "invoice", "payment", "receipt", "summary") -> AgentType.BILL
 
-            // Notes / summaries
+            //  Finance / bills — specific to receipts, invoices, or transactions (not investment)
             text.containsAny(
-                "note",
-                "summarize",
-                "highlight",
-                "lecture",
-                "meeting"
+                "bill", "invoice", "payment due", "due date",
+                "receipt", "transaction summary", "billing"
+            ) -> AgentType.BILL
+
+
+            //  Notes / summaries — summarization or note-making intent
+            text.containsAny(
+                "summarize", "make notes", "highlight points",
+                "summary", "key takeaways", "lecture notes", "meeting notes"
             ) -> AgentType.NOTES
 
-            // Repair & troubleshooting
+
+            //  Repair / troubleshooting — explicit mechanical or hardware repair intent (avoid NanoBanana overlap)
             text.containsAny(
-                "fix",
-                "repair",
-                "broken",
-                "not working",
-                "malfunction"
+                "device not working", "engine issue", "hardware problem",
+                "machine repair", "technical malfunction", "replace part"
             ) -> AgentType.REPAIR
 
-            // Healthcare
+
+            //  Healthcare / wellness — avoid “stress” (used by therapist)
             text.containsAny(
-                "symptom",
-                "medicine",
-                "health",
-                "pain",
-                "doctor",
-                "injury",
-                "fever"
+                "symptom", "medicine", "treatment", "fever", "cold",
+                "injury", "doctor", "nurse", "diagnosis", "checkup", "pain relief"
             ) -> AgentType.HEALTHCARE
 
-            // Teaching / tutoring
+
+            //  Teaching / tutoring
             text.containsAny(
-                "explain",
-                "teach",
-                "study",
-                "exam",
-                "concept",
-                "lesson"
+                "explain concept", "teach me", "study material", "exam prep",
+                "question answer", "learning help", "homework", "tutorial"
             ) -> AgentType.TEACHER
 
-            // Travel planning
+
+            // ️ Travel planning — separated from general “places” (NanoBanana handles image + map)
             text.containsAny(
-                "trip",
-                "flight",
-                "hotel",
-                "itinerary",
-                "places",
-                "travel"
+                "trip", "flight", "journey", "hotel", "itinerary",
+                "tour", "vacation", "travel plan", "sightseeing", "destination"
             ) -> AgentType.TRAVEL
 
-            // Legal advice
+
+            // ️ Legal advice
             text.containsAny(
-                "law",
-                "legal",
-                "case",
-                "contract",
-                "policy",
-                "rights"
+                "law", "legal", "rights", "case", "court",
+                "policy", "contract", "regulation", "agreement"
             ) -> AgentType.LAWYER
 
-            // Coding help
+
+            //  Coding / debugging
             text.containsAny(
-                "code",
-                "bug",
-                "error",
-                "program",
-                "compile",
-                "algorithm"
+                "code", "programming", "bug", "compile", "function error",
+                "debug", "logic issue", "algorithm", "syntax", "api error"
             ) -> AgentType.CODER
 
-            // Shopping / product help
+
+            //  Shopping / product help
             text.containsAny(
-                "buy",
-                "price",
-                "cart",
-                "shopping",
-                "product",
-                "brand"
+                "buy", "purchase", "compare price", "shopping",
+                "deal", "discount", "product review", "brand", "recommend product"
             ) -> AgentType.SHOPPING
 
-            // Finance / investment
+
+            //  Finance / investment
             text.containsAny(
-                "stock",
-                "investment",
-                "crypto",
-                "loan",
-                "mutual fund",
-                "forex",
-                "savings"
+                "stock", "share price", "investment", "mutual fund",
+                "portfolio", "loan", "interest rate", "forex",
+                "currency exchange", "crypto", "market trend", "bank savings"
             ) -> AgentType.FINANCE
 
-            // Therapy / emotions
+
+            //  Therapy / emotional support
             text.containsAny(
-                "stress",
-                "anxiety",
-                "sad",
-                "depressed",
-                "happy",
-                "motivate"
+                "stress", "anxiety", "sad", "angry", "depressed",
+                "motivate", "mental health", "emotion", "mindset", "confidence"
             ) -> AgentType.THERAPIST
 
-            // Fitness / gym
+
+            // ️ Fitness / health routine
             text.containsAny(
-                "workout",
-                "exercise",
-                "diet",
-                "yoga",
-                "weight loss",
-                "fitness"
+                "workout", "exercise", "gym", "training", "diet",
+                "calories", "protein", "yoga", "fitness goal", "weight loss"
             ) -> AgentType.FITNESS
 
-            // Designer / creative help
+
+            //  Designer / creative help
             text.containsAny(
-                "poster",
-                "color",
-                "ui",
-                "logo",
-                "design",
-                "layout"
+                "poster", "banner", "color palette", "logo", "ui", "ux",
+                "layout", "design idea", "typography", "aesthetic"
             ) -> AgentType.DESIGNER
 
-            // Research / information
+
+            //  Research / information retrieval
             text.containsAny(
-                "analyze",
-                "research",
-                "report",
-                "paper",
-                "dataset",
-                "experiment"
+                "research", "academic paper", "report", "dataset",
+                "analysis", "hypothesis", "experiment", "findings", "survey"
             ) -> AgentType.RESEARCHER
 
-            // Career advice / interview
+
+            //  Career / job advice
             text.containsAny(
-                "career",
-                "resume",
-                "interview",
-                "job",
-                "internship"
+                "career", "job opening", "internship", "resume",
+                "cover letter", "interview tips", "placement", "hiring"
             ) -> AgentType.CAREER
 
-            // News & current events
-            text.containsAny("news", "headline", "update", "recent", "trending") -> AgentType.NEWS
 
-            // Technical support
+            //  News & updates
             text.containsAny(
-                "network",
-                "error code",
-                "bluetooth",
-                "wifi",
-                "crash",
-                "update"
+                "news", "headline", "update", "current events", "breaking", "trending topic"
+            ) -> AgentType.NEWS
+
+
+            //  Technical support — keep distinct from “repair” or NanoBanana “visual fix”
+            text.containsAny(
+                "software issue", "network", "bluetooth", "wifi",
+                "error code", "crash", "driver problem", "os update"
             ) -> AgentType.TECHSUPPORT
 
-            // Weather queries
-            text.containsAny("weather", "temperature", "rain", "forecast", "climate", "humidity") -> AgentType.WEATHER
+
+            //  Weather / forecast
+            text.containsAny(
+                "weather", "forecast", "rain", "temperature",
+                "climate", "humidity", "wind speed", "storm", "heatwave"
+            ) -> AgentType.WEATHER
 
             else -> AgentType.GENERAL
         }
@@ -184,7 +149,7 @@ object AgentRouter {
 
     fun getSystemPrompt(agent: AgentType): String? = when (agent) {
 
-        // 🍳 COOKING
+        //  COOKING
         AgentType.RECIPE -> """
         You are a creative chef. 
         - If user mentions ingredients or food photos, use your own reasoning to suggest recipes. 
@@ -192,28 +157,28 @@ object AgentRouter {
         Keep it simple — max 5 steps.
     """.trimIndent()
 
-        // 🌦 WEATHER
+        //  WEATHER
         AgentType.WEATHER -> """
         You are a weather assistant. 
         - When asked about current weather or forecast for a location, use getCoordinates + fetchWeather tools. 
         - For general climate or seasonal questions, reason without calling any API.
     """.trimIndent()
 
-        // 🧾 BILLS
+        //  BILLS
         AgentType.BILL -> """
         You are a finance assistant. 
         Summarize bills, invoices, or receipts clearly — list items, total, due date, and payment status.
         No API calls are needed for text-based inputs.
     """.trimIndent()
 
-        // 📝 NOTES
+        //  NOTES
         AgentType.NOTES -> """
         You are a summarization expert. 
         Compress long text or transcripts into concise key points (under 120 words). 
         Use your own reasoning, never external search.
     """.trimIndent()
 
-        // 🔧 REPAIR
+        //  REPAIR
         AgentType.REPAIR -> """
         You are a repair technician.
         - Diagnose issues and provide clear 3–5 step fixes. 
@@ -221,7 +186,7 @@ object AgentRouter {
         - Use fetchWebSearchResults only if the problem mentions a specific brand or model (e.g. "AC E4 error code").
     """.trimIndent()
 
-        // 🩺 HEALTH
+        //  HEALTH
         AgentType.HEALTHCARE -> """
         You are a wellness advisor.
         - Offer general advice and explanations.
@@ -230,7 +195,7 @@ object AgentRouter {
         - Always remind the user to consult a doctor for serious symptoms.
     """.trimIndent()
 
-        // 🎓 TEACHER
+        //  TEACHER
         AgentType.TEACHER -> """
         You are a patient teacher. 
         - Explain like to a student using analogies and short examples.
@@ -238,7 +203,7 @@ object AgentRouter {
         - Otherwise, reason internally.
     """.trimIndent()
 
-        // 🧳 TRAVEL
+        //  TRAVEL
         AgentType.TRAVEL -> """
         You are a travel planner.
         - If user asks about local places, restaurants, or hotels, use fetchWebSearchResults.
@@ -247,7 +212,7 @@ object AgentRouter {
         - For general travel tips (best time to visit, what to pack), reason internally.
     """.trimIndent()
 
-        // ⚖️ LAW
+        // ️ LAW
         AgentType.LAWYER -> """
         You are a legal assistant.
         - Explain concepts like rights, policies, or contracts in layman terms.
@@ -255,14 +220,14 @@ object AgentRouter {
         - Always add a disclaimer: “Not legal advice.”
     """.trimIndent()
 
-        // 💻 CODER
+        //  CODER
         AgentType.CODER -> """
         You are a senior software mentor. 
         - Debug, write, or explain code snippets using your reasoning. 
         - Use fetchWebSearchResults only if user explicitly asks for “latest version”, “official docs”, or “library updates”.
     """.trimIndent()
 
-        // 🛒 SHOPPING
+        //  SHOPPING
         AgentType.SHOPPING -> """
         You are a shopping assistant.
         - For comparisons, product details, or reviews, use fetchWebSearchResults.
@@ -270,7 +235,7 @@ object AgentRouter {
         Always summarize top 3 options with a short verdict.
     """.trimIndent()
 
-        // 💹 FINANCE
+        //  FINANCE
         AgentType.FINANCE -> """
         You are a financial analyst.
         - If asked about a stock, company, or symbol (AAPL, TSLA, etc.), call fetchStockData.
@@ -279,49 +244,49 @@ object AgentRouter {
         Always include a short actionable takeaway.
     """.trimIndent()
 
-        // 🧘 THERAPIST
+        //  THERAPIST
         AgentType.THERAPIST -> """
         You are a compassionate listener. 
         - Provide supportive, kind, and brief responses.
         - Use reasoning only; never external tools.
     """.trimIndent()
 
-        // 🏋️ FITNESS
+        // ️ FITNESS
         AgentType.FITNESS -> """
         You are a personal trainer.
         - Suggest short workouts, meal plans, or habit tweaks.
         - No web searches needed unless user asks for specific gym programs or “latest diet trend.”
     """.trimIndent()
 
-        // 🎨 DESIGNER
+        //  DESIGNER
         AgentType.DESIGNER -> """
         You are a UI/UX and visual design assistant.
         - For creative ideas (color palettes, layout inspiration), use reasoning.
         - For trending design examples or logos, use fetchWebSearchResults.
     """.trimIndent()
 
-        // 🔬 RESEARCHER
+        //  RESEARCHER
         AgentType.RESEARCHER -> """
         You are a research assistant.
         - If user asks for “recent papers”, “datasets”, or “studies”, use fetchWebSearchResults.
         - Otherwise, analyze or summarize data with your reasoning.
     """.trimIndent()
 
-        // 💼 CAREER
+        //  CAREER
         AgentType.CAREER -> """
         You are a career mentor.
         - Offer resume, job search, and interview advice through reasoning.
         - Use fetchWebSearchResults only for live openings or company-specific hiring trends.
     """.trimIndent()
 
-        // 📰 NEWS
+        //  NEWS
         AgentType.NEWS -> """
         You are a news summarizer.
         - If asked for latest headlines, trends, or events, use fetchWebSearchResults.
         - If user asks for context, background, or explanation of an old event, reason internally.
     """.trimIndent()
 
-        // 🧠 TECH SUPPORT
+        //  TECH SUPPORT
         AgentType.TECHSUPPORT -> """
         You are a tech support expert.
         - Use reasoning for common fixes.
@@ -335,7 +300,5 @@ object AgentRouter {
         - Be imaginative when asked, factual when needed, and concise unless creativity is requested.
         - Always stay polite, safe, and engaging — like a friendly human partner in conversation.
      """.trimIndent()
-
     }
 }
-

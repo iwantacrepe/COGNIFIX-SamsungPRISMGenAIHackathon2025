@@ -78,7 +78,7 @@ object FunctionHandlers {
         val q = queryOrSymbol.trim()
         if (q.isEmpty()) return errorJson("Empty stock query")
 
-        // ✅ Step 1: Normalize company names → ticker symbols
+        // Step 1: Normalize company names → ticker symbols
         val symbol = when {
             q.equals("apple", ignoreCase = true) -> "AAPL"
             q.equals("google", ignoreCase = true) -> "GOOGL"
@@ -91,11 +91,11 @@ object FunctionHandlers {
 
         val encoded = URLEncoder.encode(symbol, Charsets.UTF_8.name())
 
-        // ✅ Step 2: Financial Modeling Prep API endpoint
+        //  Step 2: Financial Modeling Prep API endpoint
         val quoteUrl =
             "https://financialmodelingprep.com/stable/quote?symbol=$encoded&apikey=$FMP_API_KEY"
 
-        // ✅ Step 3: Safe HTTP request
+        //  Step 3: Safe HTTP request
         val quoteBody = httpGetOrNull(quoteUrl)
         if (quoteBody.isNullOrBlank()) return errorJson("No response from FMP API")
 
@@ -105,7 +105,7 @@ object FunctionHandlers {
             return errorJson("No data found for symbol: $symbol")
         }
 
-        // ✅ Step 4: Extract all fields safely
+        // Step 4: Extract all fields safely
         val name = first["name"]?.jsonPrimitive?.content ?: symbol
         val price = first["price"]?.jsonPrimitive?.doubleOrNull
         val change = first["change"]?.jsonPrimitive?.doubleOrNull
@@ -120,12 +120,12 @@ object FunctionHandlers {
         val yearHigh = first["yearHigh"]?.jsonPrimitive?.doubleOrNull
         val yearLow = first["yearLow"]?.jsonPrimitive?.doubleOrNull
 
-        // ✅ Step 5: Handle invalid or missing API data
+        // Step 5: Handle invalid or missing API data
         if (price == null) {
             return errorJson("Stock data unavailable or API returned null price for $symbol")
         }
 
-        // ✅ Step 6: Return well-structured JSON
+        // Step 6: Return well-structured JSON
         return JsonObject(
             mapOf(
                 "symbol" to JsonPrimitive(symbol),
@@ -246,9 +246,6 @@ object FunctionHandlers {
         )
     }
 
-
-
-
     private const val SERPER_API_KEY = "bd86ce7c38b447ce99e72aaa46a4940933360517"
 
     suspend fun fetchWebSearchResults(query: String): JsonObject {
@@ -312,6 +309,5 @@ object FunctionHandlers {
     }
 
     private fun errorJson(msg: String) = JsonObject(mapOf("error" to JsonPrimitive(msg)))
-
 
 }

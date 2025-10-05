@@ -9,7 +9,7 @@ import com.google.firebase.ai.type.Tool
  */
 object FunctionDeclarations {
 
-    // 🌍 WEATHER TOOLS
+    // WEATHER TOOLS
     val getCoordinatesTool = FunctionDeclaration(
         name = "getCoordinates",
         description = """
@@ -36,7 +36,7 @@ object FunctionDeclarations {
         )
     )
 
-    // 💹 FINANCE TOOLS
+    // FINANCE TOOLS
     val fetchStockDataTool = FunctionDeclaration(
         name = "fetchStockData",
         description = """
@@ -64,7 +64,7 @@ object FunctionDeclarations {
         )
     )
 
-    // ✈️ TRAVEL & PLACES TOOLS
+    //  TRAVEL & PLACES TOOLS
     val fetchNearbyPlacesTool = FunctionDeclaration(
         name = "fetchNearbyPlaces",
         description = """
@@ -95,7 +95,7 @@ object FunctionDeclarations {
         )
     )
 
-    // 🔎 GENERIC WEB SEARCH TOOL
+    // GENERIC WEB SEARCH TOOL
     val fetchWebSearchResultsTool = FunctionDeclaration(
         name = "fetchWebSearchResults",
         description = """
@@ -116,7 +116,7 @@ object FunctionDeclarations {
         )
     )
 
-    // 🧩 AGGREGATE TOOL REGISTRATION
+    // AGGREGATE TOOL REGISTRATION
     val tools = listOf(
         Tool.functionDeclarations(
             listOf(

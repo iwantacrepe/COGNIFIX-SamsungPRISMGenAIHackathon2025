@@ -26,11 +26,7 @@ object ChatAgent {
             tools = FunctionDeclarations.tools
         )
 
-    // ✅ Chat with persistent memory
-    // replace this line
-// private val chat = generativeModel.startChat()
-
-    // with:
+    //  Chat with persistent memory
     private var _chat = generativeModel.startChat(
         history = mutableListOf(
             content(role = "model") { text("Hi! I'm Cognifix — your multimodal AI assistant.") }
@@ -66,7 +62,7 @@ object ChatAgent {
         if (systemPrompt != null) builder.part(TextPart("$systemPrompt\n\n$STYLE_PROMPT"))
         else builder.part(TextPart(STYLE_PROMPT))
 
-        // 🖼️ Add multimodal input (text, image, file, etc.)
+        //  Add multimodal input (text, image, file, etc.)
         inputItems.forEach { item ->
             when (item) {
                 is ChatItem.Text -> builder.part(TextPart(item.text))
@@ -114,13 +110,13 @@ object ChatAgent {
             text(inputItems.filterIsInstance<ChatItem.Text>().joinToString(" ") { it.text })
         }
 
-        emit("🤖 Detected ${agentType.name.lowercase().replaceFirstChar { it.uppercase() }} agent...")
+        emit(" Detected ${agentType.name.lowercase().replaceFirstChar { it.uppercase() }} agent...")
 
         try {
 
-                // 🧠 1️⃣ Check if user intent requires Nano Banana (visual image fix)
+                // ️ Check if user intent requires Nano Banana (visual image fix)
                 if (IntentDetector.shouldUseNanoBanana(inputItems)) {
-                    emit("🎨 Using Nano Banana for visual image edit…")
+                    emit(" Using Visual Agent for image edit…")
 
                     val (note, bitmap) = NanoBananaHandler.processVisualFix(context, inputItems)
 
@@ -136,9 +132,9 @@ object ChatAgent {
                         emit("🖼️NANO_IMAGE_URI:$uri")
                     }
 
-                    emit(note ?: "Here's the annotated image showing what needs fixing.")
-                    emit("✅ Nano Banana finished editing.")
-                    return@flow // 🔚 Skip normal Gemini flow for this message
+                    emit(note ?: "Here's the annotated image.")
+                    emit(" Finished editing.")
+                    return@flow //  Skip normal Gemini flow for this message
                 }
 
             chat.history.add(userMessage)
@@ -211,8 +207,6 @@ object ChatAgent {
                             )
                         }
 
-
-
                         "fetchWebSearchResults" -> {
                             val query = call.args["query"]!!.jsonPrimitive.content
                             emit("🌐 Searching web for: $query …")
@@ -223,13 +217,10 @@ object ChatAgent {
                                 }
                             )
                         }
-
-
-                        // Future: add finance, news, etc.
                     }
                 }
 
-                // 🔁 Ask Gemini to summarize based on fetched function data
+                //  Ask Gemini to summarize based on fetched function data
                 emit("🧩 Composing final summary from fetched data…")
                 response = chat.sendMessage(
                     content("user") {
