@@ -73,15 +73,7 @@ Agents like *FinanceAgent*, *TravelAgent*, *RepairAgent*, and *NanoBanana (Image
 - **Context Preservation:** Memory reset control with *New Chat* button for stateless or contextual flow.  
 - **Seamless API Orchestration:** Combines reasoning and external data-fetching intelligently.  
 - **Visual Intelligence (NanoBanana):** Enables on-image annotation and correction reasoning.  
-
----
-
-## 🚀 Future Enhancements
-
-- Real-time voice agent collaboration  
-- Persistent agent memory with summarization  
-- Integration of ControlNet for deeper visual reasoning  
-- Federated orchestration across distributed agents  
+ 
 
 ---
 
