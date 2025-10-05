@@ -163,7 +163,7 @@ Include any submission or demonstration materials here.
 | ---------------- | -------------------------------------------------- | ------------------ |
 |  Video Demo    | Walkthrough of Cognifix’s multimodal orchestration | [YouTube Demo](#)  |
 |  Presentation  | Technical architecture and design overview         | [Google Slides](#) |
-|  Documentation | Full API and agent reference                       | [Project Wiki](#)  |
+|  Documentation | Full API and agent reference                       | [Project Documentation](wecode.pdf)  |
 
 ---
 
