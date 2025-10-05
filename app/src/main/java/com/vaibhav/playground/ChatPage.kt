@@ -61,10 +61,12 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Locale
+import androidx.compose.foundation.clickable
 
 @Composable
 fun ChatPage(navController: NavHostController) {
     val context = LocalContext.current
+    var expandedImageUri by remember { mutableStateOf<String?>(null) }
 
     var input by remember { mutableStateOf(TextFieldValue("")) }
     var messages by remember { mutableStateOf(listOf<ChatMessage>()) }
@@ -201,6 +203,7 @@ fun ChatPage(navController: NavHostController) {
                                             modifier = Modifier
                                                 .size(180.dp)
                                                 .clip(RoundedCornerShape(12.dp))
+                                                .clickable { expandedImageUri = item.uri }
                                         )
 
                                         //  Video preview + playback
@@ -545,4 +548,34 @@ fun ChatPage(navController: NavHostController) {
             }
         }
     }
+
+    if (expandedImageUri != null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.95f)),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                model = expandedImageUri,
+                contentDescription = "Full image view",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            )
+
+            //  Close Button
+            IconButton(
+                onClick = { expandedImageUri = null },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+                    .background(Color.Black, CircleShape)
+            ) {
+                Text("✕", color = Color.White, fontSize = 18.sp)
+            }
+        }
+    }
+
 }

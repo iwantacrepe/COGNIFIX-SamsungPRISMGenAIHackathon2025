@@ -110,13 +110,13 @@ object ChatAgent {
             text(inputItems.filterIsInstance<ChatItem.Text>().joinToString(" ") { it.text })
         }
 
-        emit(" Detected ${agentType.name.lowercase().replaceFirstChar { it.uppercase() }} agent...")
+        emit(" ${agentType.name.lowercase().replaceFirstChar { it.uppercase() }} agent...\n")
 
         try {
 
                 // ️ Check if user intent requires Nano Banana (visual image fix)
                 if (IntentDetector.shouldUseNanoBanana(inputItems)) {
-                    emit(" Using Visual Agent for image edit…")
+                    emit(" Using Visual Agent...\n")
 
                     val (note, bitmap) = NanoBananaHandler.processVisualFix(context, inputItems)
 
