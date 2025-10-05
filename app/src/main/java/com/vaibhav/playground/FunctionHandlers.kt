@@ -25,7 +25,7 @@ import java.net.URLEncoder
  */
 object FunctionHandlers {
 
-    private const val OPENWEATHER_API_KEY = "9ee374e7aad2002c04653b66d0fcc2c3"  // replace with your key
+    private const val OPENWEATHER_API_KEY = ""  // replace with your key
 
     /**
      * Get coordinates from a city name
@@ -72,7 +72,7 @@ object FunctionHandlers {
 
 
     private val client = OkHttpClient()
-    private const val FMP_API_KEY = "QGA7OiyDuV2XeGcGBDhQOfThCboJEtuh"
+    private const val FMP_API_KEY = "" // replace with your key
 
     suspend fun fetchStockData(queryOrSymbol: String): JsonObject {
         val q = queryOrSymbol.trim()
@@ -146,8 +146,8 @@ object FunctionHandlers {
         )
     }
 
-    private const val GOOGLE_PLACES_API_KEY = "YOUR_GOOGLE_PLACES_API_KEY"
-    private const val AVIATIONSTACK_API_KEY = "YOUR_AVIATIONSTACK_API_KEY"
+    private const val GOOGLE_PLACES_API_KEY = "" // replace with your key
+    private const val AVIATIONSTACK_API_KEY = "" // replace with your key
 
 
     suspend fun fetchNearbyPlaces(lat: Double, lon: Double, type: String): JsonObject {
@@ -246,7 +246,7 @@ object FunctionHandlers {
         )
     }
 
-    private const val SERPER_API_KEY = "bd86ce7c38b447ce99e72aaa46a4940933360517"
+    private const val SERPER_API_KEY = "" // replace with your key
 
     suspend fun fetchWebSearchResults(query: String): JsonObject {
         val encodedQuery = query.trim()
