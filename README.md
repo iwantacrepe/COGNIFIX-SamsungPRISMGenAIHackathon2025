@@ -15,7 +15,7 @@ It uniquely combines **agentic reasoning** with **function-calling orchestration
 ## 🤝 Agent Interaction
 > Multi-agent communication and orchestration flow inside Cognifix.
 
-![Agent Interaction](AGENT_INTERACTION_PLACEHOLDER.png)
+![Agent Interaction](AGENT_INTERACTION.png)
 
 ---
 
