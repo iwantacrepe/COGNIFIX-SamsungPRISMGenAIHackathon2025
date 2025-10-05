@@ -35,7 +35,7 @@ Example interaction between multiple agents:
 - **Research Agent** summarizes related information via Serper.dev web search.
 - **NanoBanana (ImageAnnotator)** visually analyzes or enhances user-uploaded images.
 
-![Agent Interaction](agent_interaction.png)
+![Agent Interaction](AGENT_INTERACTION.png)
 
 ---
 
