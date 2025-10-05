@@ -13,5 +13,14 @@ enum class AgentType {
     CODER,
     SHOPPING,
     FINANCE,
-    THERAPIST
+    THERAPIST,
+    RESEARCHER,
+    FITNESS,
+    DESIGNER,
+    CAREER,
+    NEWS,
+
+    WEATHER,
+    TECHSUPPORT
+
 }

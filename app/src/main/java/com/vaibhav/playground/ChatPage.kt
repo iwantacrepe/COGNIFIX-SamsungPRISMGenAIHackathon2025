@@ -487,13 +487,18 @@ fun ChatPage(navController: NavHostController) {
 
                             // Collect stream chunks
                             ChatAgent.streamMessage(context, toSend).collect { chunk ->
-                                aiText += chunk
-
-                                // Replace the last AI bubble with updated text
-                                messages = messages.toMutableList().apply {
-                                    this[aiBubbleIndex] = ChatMessage.GroupMessage(
-                                        listOf(ChatItem.Markdown(aiText)), false
-                                    )
+                                // If the chunk starts with emoji markers like 🤖 or ⚙️ or 🌦️ — treat as status
+                                if (chunk.startsWith("🤖") || chunk.startsWith("⚙️") || chunk.startsWith("📍") ||
+                                    chunk.startsWith("🌦️") || chunk.startsWith("✅")) {
+                                    // Add as a separate message line (agent thinking status)
+                                    messages = messages + ChatMessage.GroupMessage(listOf(ChatItem.Text(chunk)), false)
+                                } else {
+                                    aiText += chunk
+                                    messages = messages.toMutableList().apply {
+                                        this[aiBubbleIndex] = ChatMessage.GroupMessage(
+                                            listOf(ChatItem.Markdown(aiText)), false
+                                        )
+                                    }
                                 }
                             }
                         }

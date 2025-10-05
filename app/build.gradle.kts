@@ -54,6 +54,8 @@ android {
 dependencies {
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
+    // Add this for JSON parsing with Kotlinx Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0") // Or the latest version
 
     // Firebase AI Logic SDK (Gemini Developer API + Imagen etc.)
     implementation("com.google.firebase:firebase-ai")
