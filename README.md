@@ -1,5 +1,21 @@
 # Cognifix: Multimodal Multi-Agent Orchestrator
 
+---
+
+## Submissions
+
+Include any submission or demonstration materials here.
+
+| Type             | Description                                        | Link               |
+| ---------------- | -------------------------------------------------- | ------------------ |
+|  Video Demo    | Walkthrough of Cognifix’s multimodal orchestration | [YouTube Demo](https://youtu.be/D3ozur_KiUE)  |
+|  Presentation  | Technical architecture and design overview         | [Google Slides](https://drive.google.com/file/d/1_gCnABtKHs8zD4imU4Fpy08OikqToO0Y/view?usp=drive_link) |
+|  Documentation | Full API and agent reference                       | [Project Documentation](wecode.pdf) or [Google Drive Link](https://drive.google.com/file/d/1b4cWYnthv7meRoV_3EuWtfpBXPoBERyK/view?usp=sharing) |
+| App | Ready to run app, download and install | [Google Drive Link](https://drive.google.com/file/d/1VeWriG7jsDse-2LEDHquPhJkdsqyw451/view?usp=sharing)
+| Folder | All submissions in one place | [Google Drive Link](https://drive.google.com/drive/folders/1DxqdCQYqODS3oWMznESkh8z2w6X3WUmy?usp=sharing)
+
+---
+
 ## Introduction
 
 **Cognifix** is a multimodal, multi-agent orchestrator built in **Kotlin** that integrates **visual**, **textual**, and **auditory** modalities within a unified conversational framework.  
@@ -155,19 +171,6 @@ Example interaction between multiple agents:
 
 ---
 
-## Submissions
-
-Include any submission or demonstration materials here.
-
-| Type             | Description                                        | Link               |
-| ---------------- | -------------------------------------------------- | ------------------ |
-|  Video Demo    | Walkthrough of Cognifix’s multimodal orchestration | [YouTube Demo](https://youtu.be/D3ozur_KiUE)  |
-|  Presentation  | Technical architecture and design overview         | [Google Slides](#) |
-|  Documentation | Full API and agent reference                       | [Project Documentation](wecode.pdf) or [Google Drive Link](https://drive.google.com/file/d/1b4cWYnthv7meRoV_3EuWtfpBXPoBERyK/view?usp=sharing) |
-| App | Ready to run app, download and install | [Google Drive Link](https://drive.google.com/file/d/1VeWriG7jsDse-2LEDHquPhJkdsqyw451/view?usp=sharing)
-| Folder | All submissions in one place | [Google Drive Link](https://drive.google.com/drive/folders/1DxqdCQYqODS3oWMznESkh8z2w6X3WUmy?usp=sharing)
-
----
 
 ## Summary
 
