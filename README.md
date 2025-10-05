@@ -20,7 +20,7 @@ The Cognifix user interface provides a minimal yet powerful multimodal chat expe
 
 Below is an example of the **UI walkthrough** illustrating how a user interacts with the chat system:
 
-![UI Walkthrough](ui_walkthrough.png)
+![UI Walkthrough](UI_WALKTHROUGH.jpg)
 
 ---
 
